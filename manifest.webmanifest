@@ -1,0 +1,20 @@
+{
+  "name": "SALA FIT",
+  "short_name": "SALA FIT",
+  "description": "Program A/B/C, jurnal local și export CSV pentru antrenamente.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07101f",
+  "theme_color": "#07101f",
+  "lang": "ro",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
