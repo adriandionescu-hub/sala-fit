@@ -1,0 +1,27 @@
+name: API checks
+
+on:
+  push:
+    branches: ["feature/api-v1", "main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - name: Syntax checks
+        run: |
+          node --check api/_shared.js
+          node --check api/health.js
+          node --check api/events.js
+          node --check api/coach.js
+          node --check api-client.js
+          node --check app.js
+          node --check sw.js
