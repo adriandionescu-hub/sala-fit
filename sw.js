@@ -1,5 +1,5 @@
-const CACHE='sala-fit-v1.1.0';
-const ASSETS=['./','./index.html','./styles.css','./app.js','./manifest.webmanifest','./icon.svg','./version.json'];
+const CACHE='sala-fit-v1.2.0';
+const ASSETS=['./','./index.html','./styles.css','./app.js','./api-client.js','./manifest.webmanifest','./icon.svg','./version.json'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS))));
 self.addEventListener('activate',event=>event.waitUntil(Promise.all([
   caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))),
