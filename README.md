@@ -2,6 +2,14 @@
 
 Aplicație PWA pentru program A/B/C, urmărirea seriilor și export CSV.
 
+## Versiunea 1.1.1
+
+- rubrică finală **OPTIONAL**, completată liber pentru bandă, eliptică, abdomen, stretching etc.;
+- textul opțional este salvat local și exportat ca rând separat în CSV;
+- verificarea actualizării se face explicit la fiecare pornire;
+- o versiune nouă găsită la pornire se aplică automat și aplicația se reîncarcă;
+- rămân active verificările când aplicația revine în prim-plan și apoi la fiecare oră.
+
 ## Versiunea 1.1.0
 
 - trecere sigură A → B → C → A înainte de deschiderea ferestrei de partajare;
