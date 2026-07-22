@@ -1,5 +1,5 @@
 'use strict';
-const APP_VERSION='1.1.0';
+const APP_VERSION='1.1.1';
 const PROGRAM={
   A:[
     {name:'Împins la piept la aparat',kg:30,sets:3,min:8,max:12,rest:120,decision:'Menține 30 kg; crește numai după 3 seturi curate în țintă.',video:'machine chest press proper form'},
@@ -38,6 +38,7 @@ let currentDay=localStorage.getItem('fitDay')||'B';
 let timerId=null;
 let waitingWorker=null;
 let installPrompt=null;
+let startupUpdatePhase=true;
 
 function localDate(){
   const d=new Date();
@@ -66,7 +67,7 @@ function render(){
   $$('.tab').forEach(btn=>btn.classList.toggle('on',btn.dataset.d===currentDay));
   $('#day').textContent=currentDay;
   const data=loadSession();
-  $('#list').innerHTML=PROGRAM[currentDay].map((ex,index)=>{
+  const exercises=PROGRAM[currentDay].map((ex,index)=>{
     const row=data[index]||{};
     const done=row.done||isComplete(row,ex);
     return `<article class="ex ${classFor(row,ex)}" data-i="${index}">
@@ -81,6 +82,13 @@ function render(){
       <button class="donebtn ${done?'on':''}" data-done>${done?'✓ FINALIZAT':'MARCAJ FINALIZAT'}</button>
     </article>`;
   }).join('');
+
+  const optional=`<article class="optional-card">
+    <div class="optional-head"><div class="nr">+</div><div><div class="name">OPTIONAL LA FINAL</div><div class="optional-sub">Completezi numai când mai faci ceva după programul principal.</div></div></div>
+    <textarea class="optional-notes" id="optional" placeholder="Ex.: bandă 10 min, 5 km/h, înclinație 6%; eliptică 12 min; abdomen pe minge 3 × 15; stretching 8 min...">${esc(data.optional||'')}</textarea>
+  </article>`;
+
+  $('#list').innerHTML=exercises+optional;
 
   $$('.ex').forEach(card=>{
     const index=Number(card.dataset.i);
@@ -102,6 +110,13 @@ function render(){
     });
     card.querySelector('[data-t]').addEventListener('click',event=>startTimer(Number(event.currentTarget.dataset.t),event.currentTarget));
   });
+
+  $('#optional').addEventListener('input',event=>{
+    const data=loadSession();
+    data.optional=event.currentTarget.value;
+    saveSession(data);
+  });
+
   updateStats();
 }
 
@@ -133,6 +148,7 @@ function sessionText(day,data,date){
     const row=data[index]||{};
     lines.push(`${index+1}. ${ex.name}${ex.side?' '+ex.side:''} | ${row.kg??ex.kg} kg | ${ex.sets===2?'X/':''}${ex.sets===2?(row.s2||'')+'/'+(row.s3||''):(row.s1||'')+'/'+(row.s2||'')+'/'+(row.s3||'')} | RIR ${row.rir??2} | durere ${row.pain??0}${row.note?' | '+row.note:''}`);
   });
+  lines.push(`OPTIONAL: ${String(data.optional||'').trim()||'nimic'}`);
   return lines.join('\n');
 }
 function quoteCsv(value){return `"${String(value??'').replaceAll('"','""')}"`;}
@@ -143,6 +159,7 @@ function createCsv(day,data,date){
     const complete=row.done||isComplete(row,ex);
     rows.push([date,day,index+1,ex.name,ex.side||'Bilateral',row.kg??ex.kg,ex.sets===2?'X':row.s1||'',row.s2||'',row.s3||'',row.rir??2,row.pain??0,complete?'DA':'NU',row.note||'']);
   });
+  rows.push([date,day,'OPTIONAL','OPTIONAL','','','','','','','','',data.optional||'']);
   return '\ufeff'+rows.map(row=>row.map(quoteCsv).join(';')).join('\r\n');
 }
 async function shareCsv(day,data,date){
@@ -200,18 +217,33 @@ window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();ins
 $('#install').addEventListener('click',async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;$('#install').classList.remove('on');});
 window.addEventListener('appinstalled',()=>showToast('Aplicația a fost instalată'));
 
-function offerUpdate(worker){waitingWorker=worker;$('#update').classList.add('on');}
-$('#applyUpdate').addEventListener('click',()=>{if(waitingWorker)waitingWorker.postMessage({type:'SKIP_WAITING'});else location.reload();});
+function activateUpdate(worker){
+  waitingWorker=worker;
+  worker?.postMessage({type:'SKIP_WAITING'});
+}
+function offerUpdate(worker){
+  waitingWorker=worker;
+  if(startupUpdatePhase)activateUpdate(worker);
+  else $('#update').classList.add('on');
+}
+$('#applyUpdate').addEventListener('click',()=>{if(waitingWorker)activateUpdate(waitingWorker);else location.reload();});
 if('serviceWorker' in navigator){
   window.addEventListener('load',async()=>{
-    const registration=await navigator.serviceWorker.register('./sw.js');
-    if(registration.waiting)offerUpdate(registration.waiting);
-    registration.addEventListener('updatefound',()=>{
-      const worker=registration.installing;
-      worker?.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)offerUpdate(worker);});
-    });
-    document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')registration.update();});
-    setInterval(()=>registration.update(),60*60*1000);
+    try{
+      const registration=await navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'});
+      if(registration.waiting)offerUpdate(registration.waiting);
+      registration.addEventListener('updatefound',()=>{
+        const worker=registration.installing;
+        worker?.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)offerUpdate(worker);});
+      });
+      await registration.update();
+      setTimeout(()=>{startupUpdatePhase=false;},10000);
+      document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')registration.update();});
+      setInterval(()=>registration.update(),60*60*1000);
+    }catch(error){
+      startupUpdatePhase=false;
+      console.warn('Actualizarea automată nu a putut fi verificată.',error);
+    }
   });
   navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
 }
