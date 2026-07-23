@@ -15,14 +15,26 @@ function extractOutputText(response) {
     return response.output_text.trim();
   }
 
+  const parts = [];
   for (const item of response?.output || []) {
     for (const content of item?.content || []) {
       if (content?.type === 'output_text' && typeof content.text === 'string') {
-        return content.text.trim();
+        parts.push(content.text.trim());
       }
     }
   }
 
+  return parts.filter(Boolean).join('\n\n').trim();
+}
+
+function extractRefusal(response) {
+  for (const item of response?.output || []) {
+    for (const content of item?.content || []) {
+      if (content?.type === 'refusal' && typeof content.refusal === 'string') {
+        return content.refusal.trim();
+      }
+    }
+  }
   return '';
 }
 
@@ -85,7 +97,8 @@ export default {
         body: JSON.stringify({
           model: 'gpt-5-mini',
           store: false,
-          max_output_tokens: 700,
+          reasoning: { effort: 'minimal' },
+          max_output_tokens: 1200,
           instructions,
           input: `Analizează această ședință SALA FIT:\n${sessionJson}`
         })
@@ -104,10 +117,27 @@ export default {
     }
 
     const analysis = extractOutputText(payload);
-    if (!analysis) {
-      return json({ error: 'OpenAI nu a returnat text pentru analiză.' }, 502);
+    if (analysis) {
+      return json({ analysis });
     }
 
-    return json({ analysis });
+    const refusal = extractRefusal(payload);
+    if (refusal) {
+      console.error('OpenAI refusal', refusal);
+      return json({ error: `OpenAI a refuzat analiza: ${refusal}` }, 502);
+    }
+
+    console.error('OpenAI empty output', {
+      status: payload?.status,
+      incomplete_details: payload?.incomplete_details,
+      usage: payload?.usage,
+      output_types: Array.isArray(payload?.output) ? payload.output.map(item => item?.type) : []
+    });
+
+    if (payload?.status === 'incomplete' && payload?.incomplete_details?.reason === 'max_output_tokens') {
+      return json({ error: 'Analiza s-a oprit înainte să producă text. Am mărit limita; încearcă din nou.' }, 502);
+    }
+
+    return json({ error: 'OpenAI nu a returnat text pentru analiză. Încearcă din nou.' }, 502);
   }
 };
