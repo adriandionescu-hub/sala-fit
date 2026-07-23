@@ -1,1 +1,1 @@
-{"version":"1.2.0","released":"2026-07-23","notes":"Analiză AI a ședinței prin funcție Vercel securizată; cheia OpenAI rămâne exclusiv pe server."}
+{"version":"1.2.1","released":"2026-07-23","notes":"Corectare Analiză AI: efort de raționament minim, limită de ieșire mărită și diagnostic mai clar pentru răspunsuri incomplete."}
