@@ -1,6 +1,6 @@
 'use strict';
 
-const AI_VERSION='1.2.0';
+const AI_VERSION='1.2.1';
 const aiButton=document.querySelector('#aiAnalyze');
 const aiPanel=document.querySelector('#aiPanel');
 const aiText=document.querySelector('#aiText');
