@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#07101f">
-  <meta name="description" content="SALA FIT — program de antrenament A/B/C, jurnal local și export CSV.">
+  <meta name="description" content="SALA FIT — program de antrenament A/B/C, jurnal local, export CSV și analiză AI.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icon.svg">
@@ -24,11 +24,22 @@
   <div class="rule"><b>Regula noastră:</b> DECIZIE → MOTIV → REZULTAT → ÎNVĂȚARE.<br>Greșeala este informație, nu verdict. Restanțele nu prelungesc ședința peste 60 de minute.</div>
   <div class="stats"><div class="stat"><b id="day">B</b><span>ZIUA</span></div><div class="stat"><b id="prog">0/7</b><span>FINALIZATE</span></div><div class="stat"><b id="vol">0</b><span>VOLUM KG</span></div></div>
   <section id="list"></section>
+  <section class="ai-card">
+    <div class="ai-head">
+      <div><b>Motanul analizează ședința</b><span>Rezumat, ajustări și indicații pentru data viitoare.</span></div>
+      <button id="aiAnalyze">🐾 ANALIZĂ AI</button>
+    </div>
+    <div class="ai-panel" id="aiPanel" hidden>
+      <div class="ai-tools"><b>ANALIZA MOTANULUI</b><div><button id="aiCopy">Copiază</button><button id="aiClose">Închide</button></div></div>
+      <pre id="aiText"></pre>
+    </div>
+  </section>
   <div class="version" id="version"></div>
 </main>
 <footer><div class="actions"><button class="act dark" id="reset">Reset</button><button class="act dark" id="copy">Copiază</button><button class="act ok" id="finish">Închide ședința</button></div></footer>
 <div class="toast" id="toast">Salvat</div>
 <script src="./app.js" defer></script>
 <script src="./csv-fix.js" defer></script>
+<script src="./ai.js" defer></script>
 </body>
 </html>
