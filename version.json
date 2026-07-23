@@ -1,1 +1,1 @@
-{"version":"1.1.1","released":"2026-07-22","notes":"Rubrică Optional la final, export în CSV și verificare/aplicare automată a actualizării la pornire."}
+{"version":"1.1.2","released":"2026-07-23","notes":"Corectare export CSV: valorile zecimale folosesc virgula, pentru a nu fi interpretate de Excel ca date calendaristice."}
