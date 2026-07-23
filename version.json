@@ -1,1 +1,1 @@
-{"version":"1.1.2","released":"2026-07-23","notes":"Corectare export CSV: valorile zecimale folosesc virgula, pentru a nu fi interpretate de Excel ca date calendaristice."}
+{"version":"1.1.3","released":"2026-07-23","notes":"Corectare definitivă export CSV: câmpul Kg este convertit explicit la format zecimal românesc înainte de generarea fișierului."}
