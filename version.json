@@ -1,1 +1,1 @@
-{"version":"1.2.1","released":"2026-07-23","notes":"Corectare Analiză AI: efort de raționament minim, limită de ieșire mărită și diagnostic mai clar pentru răspunsuri incomplete."}
+{"version":"1.3.0","released":"2026-07-27","notes":"RIR si durerea au fost eliminate din interfata. Greutatea urmatoarei sedinte se calculeaza din ultima sedinta: media repetitiilor peste 12 creste masa, altfel se mentine. Premii motivationale: medalie pentru cresterea masei si steluta pentru o medie mai buna la aceeasi masa."}
