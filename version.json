@@ -1,1 +1,1 @@
-{"version":"1.3.3","released":"2026-07-29","notes":"La inchiderea sedintei, fisierul CSV este trimis automat prin Vercel si Make catre OneDrive. Daca legatura nu functioneaza, se descarca automat un CSV local de siguranta."}
+{"version":"1.3.4","released":"2026-07-29","notes":"Cat timp SALA FIT ramane deschisa in prim-plan, aplicatia mentine automat ecranul telefonului aprins, fara buton suplimentar."}
