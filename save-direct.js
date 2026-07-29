@@ -36,9 +36,9 @@
     }
   };
 
-  localStorage.setItem('fitAppVersion', '1.3.3');
+  localStorage.setItem('fitAppVersion', '1.3.4');
   document.addEventListener('DOMContentLoaded', () => {
     const version = document.querySelector('#version');
-    if (version) version.textContent = 'Versiunea 1.3.3';
+    if (version) version.textContent = 'Versiunea 1.3.4';
   });
 })();
