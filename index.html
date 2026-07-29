@@ -5,11 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#07101f">
   <meta name="description" content="SALA FIT — program de antrenament A/B/C, jurnal local, export CSV și analiză AI.">
-  <link rel="manifest" href="./manifest.webmanifest?v=133">
-  <link rel="icon" href="./icon.svg?v=133" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="./icon.svg?v=133">
+  <link rel="manifest" href="./manifest.webmanifest?v=134">
+  <link rel="icon" href="./icon.svg?v=134" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon.svg?v=134">
   <title>SALA FIT · Adrian</title>
-  <link rel="stylesheet" href="./styles.css?v=133">
+  <link rel="stylesheet" href="./styles.css?v=134">
 </head>
 <body>
 <header>
@@ -21,6 +21,7 @@
 <main>
   <div class="update" id="update"><span><b>Versiune nouă disponibilă.</b><br><small>Datele tale rămân salvate.</small></span><button id="applyUpdate">Actualizează</button></div>
   <button class="install" id="install">Instalează SALA FIT pe telefon</button>
+  <button class="wake-lock wait" id="keepAwake" type="button">☀️ ECRAN APRINS · ATINGE</button>
   <div class="rule"><b>Regula noastră:</b> DECIZIE → MOTIV → REZULTAT → ÎNVĂȚARE.<br>Greșeala este informație, nu verdict. Restanțele nu prelungesc ședința peste 60 de minute.</div>
   <div class="stats"><div class="stat"><b id="day">B</b><span>ZIUA</span></div><div class="stat"><b id="prog">0/7</b><span>FINALIZATE</span></div><div class="stat"><b id="vol">0</b><span>VOLUM KG</span></div></div>
   <section id="list"></section>
@@ -38,9 +39,10 @@
 </main>
 <footer><div class="actions"><button class="act dark" id="reset">Reset</button><button class="act dark" id="copy">Copiază</button><button class="act ok" id="finish">Închide ședința</button></div></footer>
 <div class="toast" id="toast">Salvat</div>
-<script src="./app.js?v=133" defer></script>
-<script src="./save-direct.js?v=133" defer></script>
-<script src="./csv-fix.js?v=133" defer></script>
-<script src="./ai.js?v=133" defer></script>
+<script src="./app.js?v=134" defer></script>
+<script src="./save-direct.js?v=134" defer></script>
+<script src="./wake-lock.js?v=134" defer></script>
+<script src="./csv-fix.js?v=134" defer></script>
+<script src="./ai.js?v=134" defer></script>
 </body>
 </html>
