@@ -1,1 +1,1 @@
-{"version":"1.3.10","released":"2026-07-30","notes":"MENU se deschide acum deasupra butoanelor principale, astfel încât Reset, Copiază și Recuperează ultima să fie vizibile imediat, fără derulare suplimentară."}
+{"version":"1.3.11","released":"2026-07-30","notes":"Istoricul validat repară acum și cheile locale goale sau corupte, nu doar istoricul complet absent. Mediile, creșterile și premiile reapar fără să suprascrie o ședință reală care conține repetări."}
