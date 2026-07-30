@@ -1,1 +1,1 @@
-{"version":"1.3.11","released":"2026-07-30","notes":"Istoricul validat repară acum și cheile locale goale sau corupte, nu doar istoricul complet absent. Mediile, creșterile și premiile reapar fără să suprascrie o ședință reală care conține repetări."}
+{"version":"1.3.12","released":"2026-07-30","notes":"Istoricul este căutat acum separat pentru fiecare exercițiu. O ședință mai nouă, dar goală sau incompletă, nu mai ascunde ultima execuție completă; mediile, menținerea, creșterile și premiile se afișează corect."}
