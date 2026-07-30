@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const MENU_VERSION = '1.3.11';
+  const MENU_VERSION = '1.3.12';
 
   document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.querySelector('#menuToggle');
