@@ -1,26 +1,26 @@
 'use strict';
-const APP_VERSION='1.3.1';
+const APP_VERSION='1.3.5';
 const PROGRAM={
 A:[
-{name:'Împins la piept la aparat',kg:30,step:5,sets:3,min:8,max:12,rest:120,video:'machine chest press proper form'},
-{name:'Tracțiuni la helcometru - priză neutră',kg:40,step:5,sets:3,min:8,max:12,rest:120,video:'neutral grip lat pulldown proper form'},
+{name:'Împins la piept la aparat',kg:35,step:5,sets:3,min:8,max:12,rest:120,video:'machine chest press proper form'},
+{name:'Tracțiuni la helcometru - priză neutră',kg:45,step:5,sets:3,min:8,max:12,rest:120,video:'neutral grip lat pulldown proper form'},
 {name:'Împins înclinat cu gantere',kg:12,step:2,sets:3,min:8,max:12,rest:120,video:'incline dumbbell press proper form'},
-{name:'Ramat la cablu din șezut',kg:35,step:5,sets:3,min:8,max:12,rest:120,video:'seated cable row proper form'},
+{name:'Ramat la cablu din șezut',kg:50,step:5,sets:3,min:8,max:12,rest:120,video:'seated cable row proper form'},
 {name:'Flexii biceps cu gantere',kg:12,step:2,sets:3,min:10,max:15,rest:75,video:'dumbbell biceps curl proper form'},
 {name:'Extensii triceps cu frânghia',kg:20,step:5,sets:3,min:10,max:15,rest:75,video:'rope triceps pushdown proper form'}],
 B:[
-{name:'Presa pentru umeri la aparat',kg:25,step:5,sets:3,min:8,max:12,rest:120,video:'machine shoulder press proper form'},
-{name:'Ramat cu pieptul sprijinit',kg:60,step:5,sets:3,min:8,max:12,rest:120,video:'seated chest supported row machine proper form'},
+{name:'Presa pentru umeri la aparat',kg:30,step:5,sets:3,min:8,max:12,rest:120,video:'machine shoulder press proper form'},
+{name:'Ramat cu pieptul sprijinit',kg:65,step:5,sets:3,min:8,max:12,rest:120,video:'seated chest supported row machine proper form'},
 {name:'Ridicări laterale cu gantere',kg:5,step:1,sets:3,min:12,max:15,rest:75,video:'dumbbell lateral raise proper form'},
 {name:'Face pull la cablu',kg:15,step:5,sets:3,min:12,max:15,rest:75,video:'face pull cable proper form'},
 {name:'Ridicări din umeri pentru trapez',kg:20,step:2,sets:3,min:10,max:15,rest:90,video:'dumbbell shrug proper form'},
-{name:'Presa pentru picioare - întreținere',kg:110,step:10,sets:2,min:10,max:15,rest:120,video:'leg press proper form'},
-{name:'Flexii femurali la aparat - întreținere',kg:60,step:5,sets:2,min:10,max:15,rest:90,video:'leg curl machine proper form'}],
+{name:'Presa pentru picioare - întreținere',kg:120,step:10,sets:2,min:10,max:15,rest:120,video:'leg press proper form'},
+{name:'Flexii femurali la aparat - întreținere',kg:65,step:5,sets:2,min:10,max:15,rest:90,video:'leg curl machine proper form'}],
 C:[
 {name:'Fluturări la aparat pentru piept',kg:35,step:5,sets:3,min:10,max:15,rest:90,video:'pec deck fly proper form'},
 {name:'Tracțiuni la helcometru - priză medie',kg:40,step:5,sets:3,min:8,max:12,rest:120,video:'lat pulldown proper form'},
 {name:'Împins la piept - varianta alternativă',kg:35,step:5,sets:3,min:8,max:12,rest:120,video:'converging chest press proper form'},
-{name:'Ramat jos la aparat',kg:45,step:5,sets:3,min:8,max:12,rest:120,video:'low row machine proper form'},
+{name:'Ramat jos la aparat',kg:50,step:5,sets:3,min:8,max:12,rest:120,video:'low row machine proper form'},
 {name:'Ridicări laterale la cablu',side:'STÂNGA',kg:5,step:2.5,sets:3,min:10,max:15,rest:75,video:'cable lateral raise proper form'},
 {name:'Ridicări laterale la cablu',side:'DREAPTA',kg:5,step:2.5,sets:3,min:10,max:15,rest:75,video:'cable lateral raise proper form'},
 {name:'Flexii ciocan',kg:10,step:2,sets:3,min:10,max:15,rest:75,video:'hammer curl proper form'},
@@ -35,14 +35,15 @@ function loadSession(day=currentDay,date=localDate()){try{return JSON.parse(loca
 function saveSession(data,day=currentDay,date=localDate()){localStorage.setItem(sessionKey(day,date),JSON.stringify(data));showToast('Salvat');updateStats()}
 function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]))}
 function requiredFields(ex){return ex.sets===2?['s2','s3']:['s1','s2','s3']}
-function repsAverage(row,ex){const values=requiredFields(ex).map(k=>parseInt(row?.[k],10)).filter(Number.isFinite);return values.length===requiredFields(ex).length?values.reduce((a,b)=>a+b,0)/values.length:null}
+function completedReps(row,ex){const values=requiredFields(ex).map(k=>parseInt(row?.[k],10)).filter(Number.isFinite);return values.length===requiredFields(ex).length?values:null}
+function repsAverage(row,ex){const values=completedReps(row,ex);return values?values.reduce((a,b)=>a+b,0)/values.length:null}
 function hasAnyReps(row,ex){return requiredFields(ex).some(k=>String(row?.[k]??'').trim())}
 function isComplete(row,ex){return requiredFields(ex).every(k=>parseInt(row?.[k],10)>0)}
 function classFor(row,ex){if(row?.done||isComplete(row,ex))return'done';if(hasAnyReps(row,ex))return'partial';return''}
 function setValue(row,ex,n){if(ex.sets===2&&n===1)return'X';return row?.[`s${n}`]??''}
 function historyFor(day){const out=[];for(let i=0;i<localStorage.length;i++){const key=localStorage.key(i),m=key?.match(/^fit:(\d{4}-\d{2}-\d{2}):([ABC])$/);if(m&&m[2]===day&&m[1]!==localDate())out.push({date:m[1],data:loadSession(day,m[1])})}return out.sort((a,b)=>b.date.localeCompare(a.date))}
-function prescription(day,index,ex){const last=historyFor(day)[0],row=last?.data?.[index];if(!row)return{kg:ex.kg,last:null,medal:false};const kg=parseFloat(row.kg??ex.kg)||ex.kg,avg=repsAverage(row,ex);return{kg:avg!==null&&avg>12?kg+ex.step:kg,last:row,medal:avg!==null&&avg>12,lastAvg:avg}}
-function award(row,ex,p){if(p.medal)return{icon:'🏅',text:`Masă crescută: media anterioară ${p.lastAvg.toFixed(1)} repetări.`};const avg=repsAverage(row,ex),prev=p.last?repsAverage(p.last,ex):null,same=Number(row?.kg??p.kg)===Number(p.last?.kg??p.kg);if(avg!==null&&prev!==null&&same&&avg>prev)return{icon:'⭐',text:`Record de repetări: media ${avg.toFixed(1)}, înainte ${prev.toFixed(1)}.`};return null}
+function prescription(day,index,ex){const last=historyFor(day)[0],row=last?.data?.[index];if(!row)return{kg:ex.kg,last:null,medal:false};const kg=parseFloat(row.kg??ex.kg)||ex.kg,values=completedReps(row,ex),grow=values!==null&&values.every(v=>v>=ex.max),avg=values?values.reduce((a,b)=>a+b,0)/values.length:null;return{kg:grow?kg+ex.step:kg,last:row,medal:grow,lastAvg:avg}}
+function award(row,ex,p){if(p.medal)return{icon:'🏅',text:`Masă crescută: toate seturile anterioare au atins pragul de ${ex.max} repetări.`};const avg=repsAverage(row,ex),prev=p.last?repsAverage(p.last,ex):null,same=Number(row?.kg??p.kg)===Number(p.last?.kg??p.kg);if(avg!==null&&prev!==null&&same&&avg>prev)return{icon:'⭐',text:`Record de repetări: media ${avg.toFixed(1)}, înainte ${prev.toFixed(1)}.`};return null}
 function render(){localStorage.setItem('fitDay',currentDay);$$('.tab').forEach(b=>b.classList.toggle('on',b.dataset.d===currentDay));$('#day').textContent=currentDay;const data=loadSession();const exercises=PROGRAM[currentDay].map((ex,index)=>{const row=data[index]||{},p=prescription(currentDay,index,ex);if(row.kg==null)row.kg=p.kg;const done=row.done||isComplete(row,ex),prize=award(row,ex,p);return `<article class="ex ${classFor(row,ex)}" data-i="${index}"><div class="head"><div class="nr">${index+1}</div><div class="wrap"><div class="name">${esc(ex.name)}</div>${ex.side?`<div class="side">${esc(ex.side)}</div>`:''}</div><a class="video" target="_blank" rel="noopener" href="https://www.youtube.com/results?search_query=${encodeURIComponent(ex.video)}">VIDEO ▶</a></div><div class="meta"><span class="pill">${ex.sets} seturi</span><span class="pill">${ex.min}–${ex.max} repetări</span><span class="pill">${ex.rest} sec pauză</span></div>${prize?`<div class="award"><b>${prize.icon}</b><span>${esc(prize.text)}</span></div>`:`<div class="dec">Media ultimei ședințe ${p.lastAvg==null?'nu există':p.lastAvg.toFixed(1)} — ${p.medal?'creștem':'menținem'} masa.</div>`}<div class="grid"><div class="field"><label>KG</label><input data-f="kg" inputmode="decimal" value="${esc(row.kg)}"></div>${[1,2,3].map(n=>`<div class="field"><label>SET ${n}</label><input data-f="s${n}" inputmode="numeric" value="${esc(setValue(row,ex,n))}" ${ex.sets===2&&n===1?'disabled':''}></div>`).join('')}</div><div class="timer-row"><button class="timer" data-t="${ex.rest}">⏱ ${ex.rest}s</button></div><textarea class="notes" data-f="note" placeholder="Observații...">${esc(row.note||'')}</textarea><button class="donebtn ${done?'on':''}" data-done>${done?'✓ FINALIZAT':'MARCAJ FINALIZAT'}</button></article>`}).join('');
 const optional=`<article class="optional-card"><div class="optional-head"><div class="nr">+</div><div><div class="name">OPTIONAL LA FINAL</div><div class="optional-sub">Completezi numai când mai faci ceva după programul principal.</div></div></div><textarea class="optional-notes" id="optional" placeholder="Ex.: bandă 10 min; eliptică 12 min; abdomen pe minge 3 × 15...">${esc(data.optional||'')}</textarea></article>`;$('#list').innerHTML=exercises+optional;
 $$('.ex').forEach(card=>{const index=Number(card.dataset.i);card.querySelectorAll('[data-f]').forEach(el=>{const persist=()=>{const d=loadSession();d[index]={...(d[index]||{}),[el.dataset.f]:el.value};saveSession(d);render()};el.addEventListener('change',persist);if(el.tagName==='TEXTAREA')el.addEventListener('blur',persist)});card.querySelector('[data-done]').addEventListener('click',()=>{const d=loadSession();d[index]={...(d[index]||{}),done:!(d[index]?.done||isComplete(d[index],PROGRAM[currentDay][index]))};saveSession(d);render()});card.querySelector('[data-t]').addEventListener('click',e=>startTimer(Number(e.currentTarget.dataset.t),e.currentTarget))});$('#optional').addEventListener('change',e=>{const d=loadSession();d.optional=e.currentTarget.value;saveSession(d)});updateStats()}
