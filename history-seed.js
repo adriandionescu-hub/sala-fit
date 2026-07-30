@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = '1.3.8';
+  const VERSION = '1.3.9';
   const HISTORY_SEED = {
     A: {
       date: '2026-07-29',
