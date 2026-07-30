@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = '1.3.11';
+  const VERSION = '1.3.12';
   const HISTORY_SEED = {
     A: {
       date: '2026-07-29',
@@ -59,7 +59,6 @@
     });
   }
 
-  let repaired = false;
   Object.entries(HISTORY_SEED).forEach(([day, session]) => {
     const key = `fit:${session.date}:${day}`;
     const existing = readStored(key);
@@ -69,10 +68,39 @@
     if (hasRecordedReps(day, existing)) return;
 
     localStorage.setItem(key, JSON.stringify(session.data));
-    repaired = true;
   });
 
-  if (repaired && typeof render === 'function') render();
+  function latestCompletedRow(day, index, exercise) {
+    const sessions = historyFor(day);
+    for (const session of sessions) {
+      const row = session?.data?.[index];
+      if (completedReps(row, exercise) !== null) return row;
+    }
+    return null;
+  }
+
+  // O ședință mai nouă, dar goală sau incompletă, nu mai ascunde
+  // ultima execuție completă a exercițiului.
+  prescription = function(day, index, exercise) {
+    const row = latestCompletedRow(day, index, exercise);
+    if (!row) {
+      return { kg: exercise.kg, last: null, medal: false, lastAvg: null };
+    }
+
+    const kg = parseFloat(row.kg ?? exercise.kg) || exercise.kg;
+    const values = completedReps(row, exercise);
+    const grow = values.every(value => value >= exercise.max);
+    const average = values.reduce((sum, value) => sum + value, 0) / values.length;
+
+    return {
+      kg: grow ? kg + exercise.step : kg,
+      last: row,
+      medal: grow,
+      lastAvg: average
+    };
+  };
+
+  if (typeof render === 'function') render();
 
   document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('fitAppVersion', VERSION);
