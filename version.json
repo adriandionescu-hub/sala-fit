@@ -1,1 +1,1 @@
-{"version":"1.3.5","released":"2026-07-30","notes":"Greutatile de lucru au fost actualizate dupa istoricul ultimelor sedinte. Cresterea automata se face acum numai cand toate seturile ating pragul maxim de repetari al exercitiului."}
+{"version":"1.3.6","released":"2026-07-30","notes":"A doua inchidere a aceleiasi sedinte se salveaza separat ca REV, fara sa suprascrie fisierul original din OneDrive."}
