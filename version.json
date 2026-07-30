@@ -1,1 +1,1 @@
-{"version":"1.3.6","released":"2026-07-30","notes":"A doua inchidere a aceleiasi sedinte se salveaza separat ca REV, fara sa suprascrie fisierul original din OneDrive."}
+{"version":"1.3.7","released":"2026-07-30","notes":"A fost adaugat butonul Recupereaza ultima, care cauta ultima sedinta cu repetari in memoria telefonului si o salveaza separat in OneDrive, fara suprascriere."}
