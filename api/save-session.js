@@ -29,7 +29,7 @@ module.exports = async function saveSession(req, res) {
   const date = String(body.date || '').trim();
   const volume = Number(body.volume) || 0;
 
-  if (!/^SALA_\d{4}-\d{2}-\d{2}_[ABC](?:_REV_\d{6})?\.csv$/.test(fileName)) {
+  if (!/^SALA_\d{4}-\d{2}-\d{2}_[ABC](?:_(?:REV|REC)_\d{6})?\.csv$/.test(fileName)) {
     return res.status(400).json({ ok: false, error: 'Invalid file name' });
   }
 
