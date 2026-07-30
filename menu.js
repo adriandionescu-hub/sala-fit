@@ -1,6 +1,8 @@
 'use strict';
 
 (() => {
+  const MENU_VERSION = '1.3.10';
+
   document.addEventListener('DOMContentLoaded', () => {
     const toggle = document.querySelector('#menuToggle');
     const panel = document.querySelector('#menuPanel');
@@ -16,16 +18,22 @@
       panel.hidden = false;
       toggle.setAttribute('aria-expanded', 'true');
       toggle.textContent = 'ÎNCHIDE MENIUL ×';
-      panel.querySelector('button')?.focus({ preventScroll: true });
     };
 
-    toggle.addEventListener('click', () => {
+    toggle.addEventListener('click', event => {
+      event.stopPropagation();
       if (panel.hidden) openMenu();
       else closeMenu();
     });
 
+    panel.addEventListener('click', event => event.stopPropagation());
+
     panel.querySelectorAll('button').forEach(button => {
       button.addEventListener('click', () => setTimeout(closeMenu, 0));
+    });
+
+    document.addEventListener('click', () => {
+      if (!panel.hidden) closeMenu();
     });
 
     document.addEventListener('keydown', event => {
@@ -34,5 +42,9 @@
         toggle.focus();
       }
     });
+
+    localStorage.setItem('fitAppVersion', MENU_VERSION);
+    const version = document.querySelector('#version');
+    if (version) version.textContent = `Versiunea ${MENU_VERSION}`;
   });
 })();
