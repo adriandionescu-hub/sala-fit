@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const RECOVERY_VERSION = '1.3.7';
+  const RECOVERY_VERSION = '1.3.9';
 
   function stamp() {
     const now = new Date();
@@ -113,14 +113,10 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    const actions = document.querySelector('footer .actions');
-    if (actions && !document.querySelector('#recoverLast')) {
-      const button = document.createElement('button');
-      button.id = 'recoverLast';
-      button.className = 'act dark';
-      button.textContent = 'Recuperează ultima';
+    const button = document.querySelector('#recoverLast');
+    if (button && !button.dataset.recoveryBound) {
+      button.dataset.recoveryBound = 'true';
       button.addEventListener('click', () => recoverLastSession(button));
-      actions.insertBefore(button, document.querySelector('#finish'));
     }
 
     localStorage.setItem('fitAppVersion', RECOVERY_VERSION);
