@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = '1.3.9';
+  const VERSION = '1.3.11';
   const HISTORY_SEED = {
     A: {
       date: '2026-07-29',
@@ -43,15 +43,36 @@
     }
   };
 
-  let added = false;
+  function readStored(key) {
+    try {
+      return JSON.parse(localStorage.getItem(key) || 'null');
+    } catch {
+      return null;
+    }
+  }
+
+  function hasRecordedReps(day, data) {
+    if (!Array.isArray(data) || !PROGRAM[day]) return false;
+    return PROGRAM[day].some((exercise, index) => {
+      const row = data[index] || {};
+      return requiredFields(exercise).some(field => (parseInt(row[field], 10) || 0) > 0);
+    });
+  }
+
+  let repaired = false;
   Object.entries(HISTORY_SEED).forEach(([day, session]) => {
     const key = `fit:${session.date}:${day}`;
-    if (localStorage.getItem(key)) return;
+    const existing = readStored(key);
+
+    // Păstrăm istoricul real dacă are repetări. Reparăm doar cheile goale,
+    // incomplete sau corupte create anterior pe telefon.
+    if (hasRecordedReps(day, existing)) return;
+
     localStorage.setItem(key, JSON.stringify(session.data));
-    added = true;
+    repaired = true;
   });
 
-  if (added && typeof render === 'function') render();
+  if (repaired && typeof render === 'function') render();
 
   document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('fitAppVersion', VERSION);
