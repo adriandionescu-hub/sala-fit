@@ -11,8 +11,28 @@
     setTimeout(() => URL.revokeObjectURL(url), 1500);
   }
 
+  function exportKey(day, date) {
+    return `fitExported:${date}:${day}`;
+  }
+
+  function revisionStamp() {
+    const now = new Date();
+    return [now.getHours(), now.getMinutes(), now.getSeconds()]
+      .map(value => String(value).padStart(2, '0'))
+      .join('');
+  }
+
   window.shareCsv = async function shareCsvDirect(day, data, date) {
-    const fileName = `SALA_${date}_${day}.csv`;
+    const key = exportKey(day, date);
+    let previousExport = null;
+    try {
+      previousExport = JSON.parse(localStorage.getItem(key) || 'null');
+    } catch {
+      previousExport = null;
+    }
+
+    const suffix = previousExport ? `_REV_${revisionStamp()}` : '';
+    const fileName = `SALA_${date}_${day}${suffix}.csv`;
     const csv = createCsv(day, data, date);
     const volume = calculateVolume(day, data);
 
@@ -28,7 +48,15 @@
         throw new Error(result.error || `HTTP ${response.status}`);
       }
 
-      showToast('Salvat automat în OneDrive');
+      localStorage.setItem(key, JSON.stringify({
+        fileName,
+        savedAt: new Date().toISOString(),
+        volume
+      }));
+
+      showToast(previousExport
+        ? 'Copie REV salvată · originalul a rămas intact'
+        : 'Salvat automat în OneDrive');
     } catch (error) {
       console.error('Salvarea automată în OneDrive a eșuat:', error);
       downloadBackup(fileName, csv);
@@ -36,9 +64,9 @@
     }
   };
 
-  localStorage.setItem('fitAppVersion', '1.3.4');
+  localStorage.setItem('fitAppVersion', '1.3.6');
   document.addEventListener('DOMContentLoaded', () => {
     const version = document.querySelector('#version');
-    if (version) version.textContent = 'Versiunea 1.3.4';
+    if (version) version.textContent = 'Versiunea 1.3.6';
   });
 })();
