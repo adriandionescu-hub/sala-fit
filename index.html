@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#07101f">
   <meta name="description" content="SALA FIT — program de antrenament A/B/C, jurnal local, export CSV și analiză AI.">
-  <link rel="manifest" href="./manifest.webmanifest?v=143">
-  <link rel="icon" href="./icon.svg?v=143" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="./icon.svg?v=143">
+  <link rel="manifest" href="./manifest.webmanifest?v=140">
+  <link rel="icon" href="./icon.svg?v=140" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon.svg?v=140">
   <title>SALA FIT · Adrian</title>
-  <link rel="stylesheet" href="./styles.css?v=143">
+  <link rel="stylesheet" href="./styles.css?v=140">
+  <link rel="stylesheet" href="./wellness.css?v=140">
 </head>
 <body>
 <header>
@@ -41,6 +42,10 @@
       <button class="act menu-toggle" id="menuToggle" type="button" aria-expanded="false" aria-controls="menuPanel">MENU ☰</button>
     </div>
     <div class="menu-panel" id="menuPanel" hidden>
+      <button class="act wellness-action sleep" type="button" data-open-wellness="sleep">🌙 SOMN</button>
+      <button class="act wellness-action water" type="button" data-open-wellness="water">💧 APĂ</button>
+      <button class="act wellness-action food" type="button" data-open-wellness="food">🍽️ ALIMENTAȚIE</button>
+      <button class="act wellness-action body" type="button" data-open-wellness="body">⚖️ MĂSURĂTORI</button>
       <button class="act dark" id="reset">Reset</button>
       <button class="act dark" id="copy">Copiază</button>
       <button class="act dark recover-action" id="recoverLast">Recuperează ultima</button>
@@ -48,14 +53,15 @@
   </section>
 </main>
 <div class="toast" id="toast">Salvat</div>
-<script src="./app.js?v=143" defer></script>
-<script src="./save-direct.js?v=143" defer></script>
-<script src="./recovery.js?v=143" defer></script>
-<script src="./history-seed.js?v=143" defer></script>
-<script src="./menu.js?v=143" defer></script>
-<script src="./program-update.js?v=143" defer></script>
-<script src="./wake-lock.js?v=143" defer></script>
-<script src="./csv-fix.js?v=143" defer></script>
-<script src="./ai.js?v=143" defer></script>
+<script src="./app.js?v=140" defer></script>
+<script src="./save-direct.js?v=140" defer></script>
+<script src="./recovery.js?v=140" defer></script>
+<script src="./history-seed.js?v=140" defer></script>
+<script src="./menu.js?v=140" defer></script>
+<script src="./program-update.js?v=140" defer></script>
+<script src="./wake-lock.js?v=140" defer></script>
+<script src="./csv-fix.js?v=140" defer></script>
+<script src="./ai.js?v=140" defer></script>
+<script src="./wellness.js?v=140" defer></script>
 </body>
 </html>
