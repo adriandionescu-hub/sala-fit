@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = '1.4.2';
+  const VERSION = '1.4.3';
   const ex = (name, kg, step, sets, min, max, rest, video, extra = {}) => ({ name, kg, step, sets, min, max, rest, video, ...extra });
 
   PROGRAM.A = [
@@ -20,7 +20,7 @@
     ex('Face pull la cablu',15,5,3,12,15,75,'face pull cable proper form'),
     ex('Presa pentru picioare - întreținere',120,10,2,10,15,120,'leg press proper form'),
     ex('Flexii femurali la aparat - întreținere',65,5,2,10,15,90,'leg curl machine proper form'),
-    ex('Pallof press',15,5,2,10,15,60,'pallof press proper form',{side:'STÂNGA + DREAPTA'})
+    ex('Abdomene pe minge mare',0,0,3,15,20,60,'stability ball crunch proper form')
   ];
   PROGRAM.C = [
     ex('Fluturări la aparat pentru piept',35,5,3,10,15,90,'pec deck fly proper form'),
@@ -56,6 +56,35 @@
     }
     return out.sort((a,b)=>b.date.localeCompare(a.date));
   };
+
+  const previousPrescription = prescription;
+  const rotationHistory = {
+    'STÂNGA': { kg:15, s1:'X', s2:'20', s3:'12', done:true },
+    'DREAPTA': { kg:15, s1:'X', s2:'15', s3:'14', done:true }
+  };
+  prescription = function(day,index,exercise){
+    if(day==='C' && exercise?.name==='Rotiri de trunchi la cablu'){
+      const sessions=historyFor(day);
+      for(const session of sessions){
+        if(session.date<'2026-08-01') continue;
+        const row=session?.data?.[index];
+        const values=completedReps(row,exercise);
+        if(values!==null){
+          const kg=parseFloat(row.kg??exercise.kg)||exercise.kg;
+          const grow=values.every(value=>value>=exercise.max);
+          const average=values.reduce((sum,value)=>sum+value,0)/values.length;
+          return {kg:grow?kg+exercise.step:kg,last:row,medal:grow,lastAvg:average};
+        }
+      }
+      const row=rotationHistory[exercise.side];
+      const values=completedReps(row,exercise);
+      const grow=values.every(value=>value>=exercise.max);
+      const average=values.reduce((sum,value)=>sum+value,0)/values.length;
+      return {kg:grow?row.kg+exercise.step:row.kg,last:row,medal:grow,lastAvg:average};
+    }
+    return previousPrescription(day,index,exercise);
+  };
+
   award = function(row,exercise,plan){
     const avg=repsAverage(row,exercise),prev=plan.last?repsAverage(plan.last,exercise):null;
     const same=Number(row?.kg??plan.kg)===Number(plan.last?.kg??plan.kg);
