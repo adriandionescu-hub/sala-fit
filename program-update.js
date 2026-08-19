@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-  const VERSION = '1.4.3';
+  const VERSION = '1.4.5';
   const ex = (name, kg, step, sets, min, max, rest, video, extra = {}) => ({ name, kg, step, sets, min, max, rest, video, ...extra });
 
   PROGRAM.A = [
@@ -34,8 +34,9 @@
   PROGRAM.D = [
     ex('Extensii lombare la banca de 45°',15,2.5,3,12,15,90,'45 degree back extension weighted proper form'),
     ex('Îndreptări românești cu gantere',12,2,3,10,15,120,'dumbbell romanian deadlift proper form'),
-    ex('Hip thrust la aparat sau bancă',30,5,3,10,15,120,'hip thrust machine proper form'),
-    ex('Ramat unilateral la cablu',20,5,3,10,15,90,'single arm cable row proper form'),
+    ex('Pull-through la cablu',20,5,3,12,15,90,'cable pull through glutes proper form'),
+    ex('Ramat unilateral la cablu',20,5,3,10,15,90,'single arm cable row proper form',{side:'STÂNGA'}),
+    ex('Ramat unilateral la cablu',20,5,3,10,15,90,'single arm cable row proper form',{side:'DREAPTA'}),
     ex('Bird-dog controlat',0,0,2,10,15,60,'bird dog exercise proper form'),
     ex('Ridicări de genunchi pentru abdomen',0,0,3,10,15,60,'captains chair knee raise proper form')
   ];
@@ -46,6 +47,24 @@
     ex('Cat-cow pentru coloană',0,0,2,10,15,45,'cat cow stretch proper form'),
     ex('Dead bug pentru abdomen',0,0,2,10,15,60,'dead bug exercise proper form')
   ];
+
+  // Migrare sigură a ședințelor D vechi: ramatul bilateral notat pe un singur rând
+  // devine STÂNGA + DREAPTA, fără să deplasăm Bird-dog / abdomen.
+  for(let i=0;i<localStorage.length;i++){
+    const key=localStorage.key(i);
+    if(!/^fit:\d{4}-\d{2}-\d{2}:D$/.test(key||''))continue;
+    try{
+      const old=JSON.parse(localStorage.getItem(key)||'{}');
+      if(!old || old._dLayoutV145)continue;
+      const migrated={...old};
+      migrated[3]=old[3]?{...old[3]}:{};
+      migrated[4]=old[3]?{...old[3]}:{};
+      migrated[5]=old[4]?{...old[4]}:{};
+      migrated[6]=old[5]?{...old[5]}:{};
+      migrated._dLayoutV145=true;
+      localStorage.setItem(key,JSON.stringify(migrated));
+    }catch{}
+  }
 
   Object.assign(NEXT,{A:'B',B:'C',C:'D',D:'E',E:'A'});
   historyFor = function(day){
@@ -81,6 +100,22 @@
       const grow=values.every(value=>value>=exercise.max);
       const average=values.reduce((sum,value)=>sum+value,0)/values.length;
       return {kg:grow?row.kg+exercise.step:row.kg,last:row,medal:grow,lastAvg:average};
+    }
+    // Pull-through pornește de la 20 kg; istoricul hip thrust nu se folosește pentru progresie.
+    if(day==='D' && exercise?.name==='Pull-through la cablu'){
+      const sessions=historyFor(day);
+      for(const session of sessions){
+        if(session.date<'2026-08-19')continue;
+        const row=session?.data?.[index];
+        const values=completedReps(row,exercise);
+        if(values!==null){
+          const kg=parseFloat(row.kg??exercise.kg)||exercise.kg;
+          const grow=values.every(value=>value>=exercise.max);
+          const average=values.reduce((sum,value)=>sum+value,0)/values.length;
+          return {kg:grow?kg+exercise.step:kg,last:row,medal:grow,lastAvg:average};
+        }
+      }
+      return {kg:exercise.kg,last:null,medal:false,lastAvg:null};
     }
     return previousPrescription(day,index,exercise);
   };
